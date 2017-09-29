@@ -6,6 +6,11 @@
 //
 
 import UIKit
+import Foundation
+
+public protocol sendReportEmailDelegate {
+    func sendReportEmail(type: Int)
+}
 
 extension PDFViewController {
     /// Initializes a new `PDFViewController`
@@ -20,7 +25,7 @@ extension PDFViewController {
     /// - parameter startPageIndex:      page index to start on load, defaults to 0; if out of bounds, set to 0
     ///
     /// - returns: a `PDFViewController`
-    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil, isThumbnailsEnabled: Bool = true, startPageIndex: Int = 0) -> PDFViewController {
+    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil, isThumbnailsEnabled: Bool = true, startPageIndex: Int = 0, additionalButton: UIBarButtonItem? = nil, emaildelegate: sendReportEmailDelegate? = nil) -> PDFViewController {
         let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
         let controller = storyboard.instantiateInitialViewController() as! PDFViewController
         controller.document = document
@@ -39,6 +44,7 @@ extension PDFViewController {
         }
         
         controller.backButton = backButton
+        controller.additionalButton = additionalButton
         
         if let actionButtonImage = actionButtonImage {
             controller.actionButton = UIBarButtonItem(image: actionButtonImage, style: .plain, target: controller, action: #selector(actionButtonPressed))
@@ -92,6 +98,8 @@ public final class PDFViewController: UIViewController {
     
     /// UIBarButtonItem used to override the default action button
     fileprivate var actionButton: UIBarButtonItem?
+    
+    public var additionalButton: UIBarButtonItem?
     
     /// Backbutton used to override the default back button
     fileprivate var backButton: UIBarButtonItem?
